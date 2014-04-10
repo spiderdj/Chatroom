@@ -1,0 +1,1 @@
+This project is a simple chatroom application made in C#.
