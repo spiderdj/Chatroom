@@ -11,7 +11,7 @@ namespace ChatroomServer
     class Client
     {
         Socket clientSocket;
-        string username = "";
+        public string username = "";
 
         const int BUFFERSIZE = 1024;
 
@@ -46,9 +46,40 @@ namespace ChatroomServer
 
             byte[] FormattedBuffer = new byte[amountOfData];
             Array.Copy(buffer, FormattedBuffer, amountOfData);
-            //ToDo do something with the data
+
+            string data = Encoding.Unicode.GetString(FormattedBuffer);
+            processData(data);
             clientSocket.BeginReceive(buffer, 0, BUFFERSIZE, SocketFlags.None, recieveData, null);
         }
+
+        void processData(string data)
+        {
+            string[] splitData = data.Split(';');
+            //Get the context of the data
+            switch (splitData[0])
+            {
+                case "username":
+                    string oldUsername = username;
+                    username = splitData[1];
+                    onUsernameChange(username,oldUsername);
+                    break;
+
+                case "message":
+                    onDataRecieved(splitData[1]);
+                    break;
+            }
+        }
+
+        public override string ToString()
+        {
+            return username;
+        }
+
+        public delegate void userNameChangeHandler(string username,string oldUsername);
+        public event userNameChangeHandler onUsernameChange;
+
+        public delegate void dataRecievedHandler(string data);
+        public event dataRecievedHandler onDataRecieved;
 
     }
 }

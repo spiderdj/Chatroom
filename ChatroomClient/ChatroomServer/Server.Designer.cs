@@ -28,30 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listBox1 = new System.Windows.Forms.ListBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.components = new System.ComponentModel.Container();
+            this.list_Clients = new System.Windows.Forms.ListBox();
+            this.btn_kick = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lbl_number = new System.Windows.Forms.Label();
+            this.UpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
-            // listBox1
+            // list_Clients
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(12, 52);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(212, 251);
-            this.listBox1.TabIndex = 0;
+            this.list_Clients.FormattingEnabled = true;
+            this.list_Clients.Location = new System.Drawing.Point(12, 52);
+            this.list_Clients.Name = "list_Clients";
+            this.list_Clients.Size = new System.Drawing.Size(212, 251);
+            this.list_Clients.TabIndex = 0;
+            this.list_Clients.SelectedValueChanged += new System.EventHandler(this.selectedItemChanged);
             // 
-            // button1
+            // btn_kick
             // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(12, 309);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Kick";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btn_kick.Enabled = false;
+            this.btn_kick.Location = new System.Drawing.Point(12, 309);
+            this.btn_kick.Name = "btn_kick";
+            this.btn_kick.Size = new System.Drawing.Size(75, 23);
+            this.btn_kick.TabIndex = 1;
+            this.btn_kick.Text = "Kick";
+            this.btn_kick.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -79,6 +82,10 @@
             this.lbl_number.Size = new System.Drawing.Size(0, 13);
             this.lbl_number.TabIndex = 4;
             // 
+            // UpdateTimer
+            // 
+            this.UpdateTimer.Tick += new System.EventHandler(this.UpdateTimer_Tick);
+            // 
             // frm_server
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -87,8 +94,8 @@
             this.Controls.Add(this.lbl_number);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.btn_kick);
+            this.Controls.Add(this.list_Clients);
             this.Name = "frm_server";
             this.Text = "Chatroom Server";
             this.ResumeLayout(false);
@@ -98,11 +105,12 @@
 
         #endregion
 
-        private System.Windows.Forms.ListBox listBox1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ListBox list_Clients;
+        private System.Windows.Forms.Button btn_kick;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lbl_number;
+        private System.Windows.Forms.Timer UpdateTimer;
 
     }
 }
