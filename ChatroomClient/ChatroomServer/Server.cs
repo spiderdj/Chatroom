@@ -50,6 +50,7 @@ namespace ChatroomServer
 
             Client client = new Client(clientSocket);
             client.onUsernameChange += onUsernameChange;
+            client.onDataRecieved += dataRecieved;
             int hash = clientSocket.GetHashCode();
             clients.Add(hash, client);
          
@@ -59,7 +60,7 @@ namespace ChatroomServer
 
         void onUsernameChange(string username,string oldUsername="")
         {
-            if (list_Clients.InvokeRequired)
+            if (list_Clients.InvokeRequired) //Call thread safe upadte of username list
             {
                 updateListBoxCallback d = new updateListBoxCallback(updateListBox);
                 list_Clients.Invoke(d,new object[]{username,oldUsername});
@@ -67,7 +68,8 @@ namespace ChatroomServer
             else
             {
                 list_Clients.Items.Remove(oldUsername);
-                list_Clients.Items.Add(username);
+                if(username != "")
+                 list_Clients.Items.Add(username);
             }
         }
 
@@ -77,6 +79,14 @@ namespace ChatroomServer
         {
             list_Clients.Items.Remove(oldUsername);
             list_Clients.Items.Add(username);
+        }
+
+        void dataRecieved(string data, Client client)
+        {
+            foreach (int id in clients.Keys)
+            {
+                clients[id].sendString("message;"+client.username+":"  + data);
+            }
         }
 
 
@@ -99,6 +109,26 @@ namespace ChatroomServer
             }
             else
                 btn_kick.Enabled = false;
+        }
+
+        private void btn_kick_Click(object sender, EventArgs e)
+        {
+            string selectedUsername = (string)list_Clients.SelectedItem;
+            int selectedId = getClientWithUsername(selectedUsername);
+            clients[selectedId].disconnect();
+            clients.Remove(selectedId);
+        }
+
+        int getClientWithUsername(string username)
+        {
+            foreach (int id in clients.Keys)
+            {
+                if (clients[id].username == username)
+                {
+                    return id;
+                }
+            }
+            return -1;
         }
 
 

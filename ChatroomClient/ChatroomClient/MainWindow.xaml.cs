@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.Net;
 using System.Net.Sockets;
 
+using System.Threading;
+
 namespace ChatroomClient
 {
     /// <summary>
@@ -34,14 +36,72 @@ namespace ChatroomClient
             this.socket = socket;
             this.username = username;
             sendString("username;" + username);
+            socket.BeginReceive(buffer, 0, BUFFERSIZE, SocketFlags.None, onDataRecieved, null);
         }
 
 
         void sendString(string data)
         {
-            byte[] byteData = Encoding.Unicode.GetBytes(data);
-            socket.Send(byteData);
+            try
+            {
+                byte[] byteData = Encoding.Unicode.GetBytes(data);
+                socket.Send(byteData);
+            }
+            catch
+            {
+                socket.Disconnect(false);
+                onDisconnect();
+            }
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btn_Send_Click(object sender, RoutedEventArgs e)
+        {
+            sendString("message;"+txt_message.Text);
+            txt_message.Text = "";
+        }
+
+
+        void onDataRecieved(IAsyncResult IR)
+        {
+            int lengthRecieved = socket.EndReceive(IR);
+            byte[] FormattedBuffer = new byte[lengthRecieved];
+            Array.Copy(buffer, FormattedBuffer, lengthRecieved);
+            string data = Encoding.Unicode.GetString(FormattedBuffer);
+            processData(data);
+            socket.BeginReceive(buffer, 0, BUFFERSIZE, SocketFlags.None, onDataRecieved, null);
+        }
+
+        void onDisconnect()
+        {
+
+        }
+
+
+        delegate void addTextCallback(string text);
+
+        void setText(string text)
+        {
+            txt_Output.AppendText( Environment.NewLine + text);
+        }
+
+        void processData(string data)
+        {
+            string[] split = data.Split(';');
+
+            switch (split[0])
+            {
+                case "message":
+                    addTextCallback d = new addTextCallback(setText);
+                    txt_Output.Dispatcher.Invoke(d,new object[]{split[1]}); //Make a thread safe call to update the textbox
+                    break;
+
+
+            }
+        }
     }
 }

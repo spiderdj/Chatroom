@@ -55,6 +55,7 @@
             this.btn_kick.TabIndex = 1;
             this.btn_kick.Text = "Kick";
             this.btn_kick.UseVisualStyleBackColor = true;
+            this.btn_kick.Click += new System.EventHandler(this.btn_kick_Click);
             // 
             // label1
             // 

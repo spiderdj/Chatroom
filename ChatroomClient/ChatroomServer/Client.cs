@@ -65,7 +65,7 @@ namespace ChatroomServer
                     break;
 
                 case "message":
-                    onDataRecieved(splitData[1]);
+                    onDataRecieved(splitData[1],this);
                     break;
             }
         }
@@ -75,10 +75,16 @@ namespace ChatroomServer
             return username;
         }
 
+        public void disconnect()
+        {
+            clientSocket.Disconnect(false);
+            onUsernameChange("", username);
+        }
+
         public delegate void userNameChangeHandler(string username,string oldUsername);
         public event userNameChangeHandler onUsernameChange;
 
-        public delegate void dataRecievedHandler(string data);
+        public delegate void dataRecievedHandler(string data,Client client);
         public event dataRecievedHandler onDataRecieved;
 
     }
